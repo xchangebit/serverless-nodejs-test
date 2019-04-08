@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "3.5.4",
     "express": "4.16.4",
+    "node-rsa": "1.0.5",
     "serverless-http": "1.9.1",
     "uuid": "3.3.2",
     "yoti": "3.4.0"

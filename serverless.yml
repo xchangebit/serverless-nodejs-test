@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: serverless-yoti-nodejs # NOTE: update this with your service name
+service: yoti-sls # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -23,9 +23,9 @@ provider:
   stage: dev
   region: eu-west-1
   environment:
-    BUCKET_NAME: serverless-yoti-nodejs-dev
-    YOTI_TABLE: serverless-yoti-nodejs-dev
-    YOTI_IDV_TABLE: "yoti_idv-${opt:stage, self:provider.stage}"
+    BUCKET_NAME: yoti-sls
+    YOTI_TABLE: yoti-sls
+    YOTI_IDV_TABLE: "yoti-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -38,32 +38,32 @@ provider:
       Action:
         - s3:ListBucket
         - s3:GetObject
-      Resource: "arn:aws:s3:::serverless-yoti-nodejs-dev/*"
+      Resource: "arn:aws:s3:::yoti-sls/*"
 
-#resources:
-#  Resources:
-#    YotiPem:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: ${self:provider.environment.BUCKET_NAME}
-#    DynamoDbTable:
-#      Type: 'AWS::DynamoDB::Table'
-#      DeletionPolicy: Retain
-#      Properties:
-#        AttributeDefinitions:
-#          -
-#            AttributeName: "id"
-#            AttributeType: "S"   
-#        KeySchema:
-#          -
-#            AttributeName: "id"
-#            KeyType: "HASH"
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 1
-#          WriteCapacityUnits: 1
-#        StreamSpecification:
-#          StreamViewType: "NEW_AND_OLD_IMAGES"
-#        TableName: ${self:provider.environment.YOTI_TABLE}
+resources:
+  Resources:
+    YotiPem:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.BUCKET_NAME}
+    DynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.YOTI_TABLE}
 
 functions:
   yoti:

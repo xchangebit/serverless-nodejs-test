@@ -1,0 +1,41 @@
+
+service: templating_yoti_sls
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: local
+  region: eu-central-1
+  environment:
+    BUCKET_NAME: templating-yoti-sls-local
+    YOTI_TABLE: templating-yoti-sls-local
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+      Resource: "arn:aws:s3:::templating-yoti-sls-local/*"
+
+functions:
+  yoti:
+    handler: app.server
+    memorySize: 128
+    environment:
+      SDK_ID: 123
+      KEY_NAME: application.pem
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true

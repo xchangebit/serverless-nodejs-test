@@ -5,7 +5,7 @@ const sls = require('serverless-http');
 const Yoti = require('yoti');
 const uuid = require('uuid/v4');
 const AWS = require('aws-sdk'); 
-const S3 = new AWS.S3()
+const S3 = new AWS.S3();
 const app = express();
 
 //AWS.config.setPromisesDependency(require('bluebird'));
@@ -74,6 +74,26 @@ const submitToken = async (token) => {
 
 app.get('/', (req, res) => {
   res.status(200).send('Hello World!');
+});
+
+app.post('/register', async (req ,res) => {
+  const register = require('./register');
+
+  const key = await register();
+
+  S3.putObject({
+      Bucket: process.env.BUCKET_NAME,
+      Key: process.env.KEY_NAME,
+      Body: key.pem
+    })
+    .promise()
+    .then(() => {
+      res.status(200).send(key.public);
+    })
+    .catch((err) => {
+      console.error(err.message);
+      res.status(500).send('unable to register');
+    });
 });
 
 app.get('/callback', (req, res) => {
